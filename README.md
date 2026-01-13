@@ -2,6 +2,11 @@
 
 A TypeScript library that wraps the Claude CLI, exposing a clean SDK interface similar to the official Claude Agent SDK v2.
 
+## ⚠️ Not Yet Supported
+
+- Custom MCP servers (coming soon)
+- Custom subagents (coming soon)
+
 ## Why?
 
 The official Claude Agent SDK requires the Anthropic API. This library wraps the `claude` CLI instead, which means:
@@ -59,6 +64,26 @@ for await (const event of session.stream()) {
 session.close();
 ```
 
+### Access thinking blocks
+
+The SDK gives you access to Claude's internal reasoning (extended thinking):
+
+```typescript
+for await (const event of session.stream()) {
+  if (event.type === "assistant") {
+    for (const block of event.message.content) {
+      if (block.type === "thinking") {
+        console.log("THINKING:", block.thinking);
+      } else if (block.type === "text") {
+        console.log("RESPONSE:", block.text);
+      } else if (block.type === "tool_use") {
+        console.log("TOOL:", block.name, block.input);
+      }
+    }
+  }
+}
+```
+
 ### Resume a session
 
 ```typescript
@@ -73,7 +98,7 @@ for await (const event of session.stream()) {
 
 ### Filtered streaming
 
-By default, `stream()` yields all CLI events. Use `{ filter: true }` to get only assistant text, tool calls, and results:
+By default, `stream()` yields all CLI events. Use `{ filter: true }` to get only assistant text, tool calls, and results (excludes thinking blocks and system events):
 
 ```typescript
 for await (const event of session.stream({ filter: true })) {
@@ -131,11 +156,6 @@ The default model is `claude-opus-4-5-20251101`. You can import and check it:
 import { DEFAULT_MODEL } from "cc-sdk";
 console.log(DEFAULT_MODEL); // "claude-opus-4-5-20251101"
 ```
-
-## Not Yet Supported
-
-- Custom MCP servers (coming soon)
-- Custom subagents (coming soon)
 
 ## Installation (Local Development)
 
