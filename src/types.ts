@@ -158,6 +158,7 @@ export interface SessionOptions {
   verbose?: boolean;
   mcpServers?: Record<string, MCPServerConfig>;
   agents?: Record<string, AgentConfig>;
+  chrome?: boolean;
 }
 
 // Stream options

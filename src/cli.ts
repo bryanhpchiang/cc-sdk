@@ -74,6 +74,11 @@ export function buildArgs(options: SpawnOptions): string[] {
     args.push("--agents", JSON.stringify(options.agents));
   }
 
+  // Chrome integration
+  if (options.chrome) {
+    args.push("--chrome");
+  }
+
   // Add the prompt as the final argument
   args.push(options.prompt);
 
